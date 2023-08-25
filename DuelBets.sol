@@ -95,3 +95,25 @@ contract Duel {
         emit BetCanceled(msg.sender, refundAmount);
     }
 }
+
+
+contract DuelFactory {
+    address[] public deployedDuels;
+
+    event DuelCreated(address indexed creator, address indexed duelContract);
+
+    function createDuel(
+        address _secondUser,
+        address _thirdParty,
+        string memory _eventDescription,
+        uint256 _lockedAmount
+    ) public {
+        Duel newDuel = new Duel(_secondUser, _thirdParty, _eventDescription, _lockedAmount, msg.sender);
+        deployedDuels.push(address(newDuel));
+        emit DuelCreated(msg.sender, address(newDuel));
+    }
+
+    function getDeployedDuels() public view returns (address[] memory) {
+        return deployedDuels;
+    }
+}
